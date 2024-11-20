@@ -16,7 +16,7 @@ function PlantPage() {
     fetch('http://localhost:6001/plants')
       .then((response) => response.json())
       .then((data) => setPlants(data))
-  }, [plants])
+  }, [])
 
 
 
