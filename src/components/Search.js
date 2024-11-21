@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
 function Search( {setSearch }) {
 
-  const [input, setInput] = useState('');
-
   function handleInputChange(e) {
-    setInput(e.target.value);
     setSearch(e.target.value);
   }
 
@@ -16,7 +13,6 @@ function Search( {setSearch }) {
         type="text"
         id="search"
         placeholder="Type a name to search..."
-        value={input}
         onChange={handleInputChange}
       />
     </div>
