@@ -7,26 +7,54 @@ function PlantPage() {
 
   const [plants, setPlants] = useState([]);
   const [search, setSearch] = useState('');
-
-  const filteredPlants = plants.filter((plant) =>
-    plant.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const [filteredPlants, setFilteredPlants] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:6001/plants')
       .then((response) => response.json())
-      .then((data) => setPlants(data))
-  }, [filteredPlants])
+      .then((data) => {
+        setPlants(data);
+        setFilteredPlants(data); 
+      });
+  }, []);
 
+  useEffect(() => {
+    setFilteredPlants(plants.filter((plant) =>
+      plant.name.toLowerCase().includes(search.toLowerCase())
+    ));
+  }, [plants, search]);
 
+  function handleAddPlant(newPlant) {
+    setPlants([...plants, newPlant]);
+  }
 
-  console.log(plants);
+  function handleDeletePlant(plantId) {
+    setPlants(plants.filter((plant) => plant.id !== plantId));
+
+    fetch(`http://localhost:6001/plants/${plantId}`, {
+      method: 'DELETE',
+    })
+  }
+
+  function handleUpdatePlant(plantId, newPrice) {
+    setPlants((prevPlants) =>
+      prevPlants.map((plant) =>
+        plant.id === plantId ? { ...plant, price: newPrice } : plant
+      )
+    );
+
+    fetch(`http://localhost:6001/plants/${plantId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ price: newPrice }),
+    })
+  }
 
   return (
     <main>
-      <NewPlantForm />
+      <NewPlantForm onAddPlant={handleAddPlant} />
       <Search setSearch={setSearch}/>
-      <PlantList plants={filteredPlants}/>
+      <PlantList plants={filteredPlants} onDeletePlant={handleDeletePlant} onUpdatePlant={handleUpdatePlant}/>
     </main>
   );
 }
