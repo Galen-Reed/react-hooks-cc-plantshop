@@ -7,22 +7,13 @@ function PlantPage() {
 
   const [plants, setPlants] = useState([]);
   const [search, setSearch] = useState('');
-  const [filteredPlants, setFilteredPlants] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:6001/plants')
       .then((response) => response.json())
-      .then((data) => {
-        setPlants(data);
-        setFilteredPlants(data); 
-      });
+      .then((data) => setPlants(data)
+      );
   }, []);
-
-  useEffect(() => {
-    setFilteredPlants(plants.filter((plant) =>
-      plant.name.toLowerCase().includes(search.toLowerCase())
-    ));
-  }, [plants, search]);
 
   function handleAddPlant(newPlant) {
     setPlants([...plants, newPlant]);
@@ -49,6 +40,10 @@ function PlantPage() {
       body: JSON.stringify({ price: newPrice }),
     })
   }
+
+    const filteredPlants = plants.filter((plant) => 
+      plant.name.toLowerCase().includes(search.toLowerCase())
+    );
 
   return (
     <main>
